@@ -1,10 +1,14 @@
 package tech.leori.gestionplanilla.employee.domain.factory;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import tech.leori.gestionplanilla.employee.domain.EmployeeLaw;
 import tech.leori.gestionplanilla.employee.domain.exception.InvalidEmployeeLawException;
@@ -12,44 +16,32 @@ import tech.leori.gestionplanilla.employee.domain.exception.InvalidEmployeeLawEx
 class EmployeeLawFactoryTest {
 
   @Test
-  @DisplayName("createLaw should return an EmployeeLaw with trimmed values when inputs are valid")
+  @DisplayName("createLaw should return a trimmed EmployeeLaw when inputs are valid")
   void createLawWithValidInputs() {
     EmployeeLaw employeeLaw = EmployeeLawFactory.createLaw("  ABC  ", "  General regime  ");
 
-    assertEquals("ABC", employeeLaw.getCode());
-    assertEquals("General regime", employeeLaw.getDescription());
+    assertAll(
+        () -> assertEquals("ABC", employeeLaw.getCode()),
+        () -> assertEquals("General regime", employeeLaw.getDescription()));
   }
 
-  @Test
-  @DisplayName("createLaw should throw when the code is null")
-  void createLawWithNullCode() {
-    assertThrows(InvalidEmployeeLawException.class, () -> EmployeeLawFactory.createLaw(null, "Description"));
+  @ParameterizedTest
+  @NullSource
+  @ValueSource(strings = {"", "   ", "AB12", "abc", "A", "TOOLONG"})
+  @DisplayName("createLaw should throw when the code is null, blank, or has an invalid format")
+  void createLawWithInvalidCodes(String code) {
+    assertThrows(
+        InvalidEmployeeLawException.class,
+        () -> EmployeeLawFactory.createLaw(code, "Description"));
   }
 
-  @Test
-  @DisplayName("createLaw should throw when the code is blank")
-  void createLawWithBlankCode() {
-    assertThrows(InvalidEmployeeLawException.class,
-        () -> EmployeeLawFactory.createLaw("   ", "Description"));
-  }
-
-  @Test
-  @DisplayName("createLaw should throw when the code does not match the expected pattern")
-  void createLawWithInvalidCodePattern() {
-    assertThrows(InvalidEmployeeLawException.class,
-        () -> EmployeeLawFactory.createLaw("AB12", "Description"));
-  }
-
-  @Test
-  @DisplayName("createLaw should throw when the description is null")
-  void createLawWithNullDescription() {
-    assertThrows(InvalidEmployeeLawException.class, () -> EmployeeLawFactory.createLaw("ABC", null));
-  }
-
-  @Test
-  @DisplayName("createLaw should throw when the description is blank")
-  void createLawWithBlankDescription() {
-    assertThrows(InvalidEmployeeLawException.class,
-        () -> EmployeeLawFactory.createLaw("ABC", "   "));
+  @ParameterizedTest
+  @NullSource
+  @ValueSource(strings = {"", "   "})
+  @DisplayName("createLaw should throw when the description is null or blank")
+  void createLawWithInvalidDescriptions(String description) {
+    assertThrows(
+        InvalidEmployeeLawException.class,
+        () -> EmployeeLawFactory.createLaw("ABC", description));
   }
 }
