@@ -13,14 +13,21 @@ public final class Employee {
   private final LocalDate birthDate;
   private final UUID clientId;
 
-  private Employee(Builder builder) {
-    this.id = builder.id;
-    this.firstName = builder.firstName;
-    this.lastName = builder.lastName;
-    this.documentType = builder.documentType;
-    this.documentNumber = builder.documentNumber;
-    this.birthDate = builder.birthDate;
-    this.clientId = builder.clientId;
+  Employee(
+      UUID id,
+      String firstName,
+      String lastName,
+      String documentType,
+      String documentNumber,
+      LocalDate birthDate,
+      UUID clientId) {
+    this.id = Objects.requireNonNullElseGet(id, UUID::randomUUID);
+    this.firstName = validateNonBlank(firstName, "firstName");
+    this.lastName = validateNonBlank(lastName, "lastName");
+    this.documentType = validateNonBlank(documentType, "documentType");
+    this.documentNumber = validateNonBlank(documentNumber, "documentNumber");
+    this.birthDate = validateBirthDate(birthDate);
+    this.clientId = Objects.requireNonNull(clientId, "clientId must not be null");
   }
 
   public UUID getId() {
@@ -49,21 +56,6 @@ public final class Employee {
 
   public UUID getClientId() {
     return clientId;
-  }
-
-  public static Builder builder() {
-    return new Builder();
-  }
-
-  public Builder toBuilder() {
-    return new Builder()
-        .withId(this.id)
-        .withFirstName(this.firstName)
-        .withLastName(this.lastName)
-        .withDocumentType(this.documentType)
-        .withDocumentNumber(this.documentNumber)
-        .withBirthDate(this.birthDate)
-        .withClientId(this.clientId);
   }
 
   @Override
@@ -131,95 +123,23 @@ public final class Employee {
   public String toString() {
     return "Employee [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", documentType="
         + documentType + ", documentNumber=" + documentNumber + ", birthDate=" + birthDate + ", clientId="
-        + clientId + ", getId()=" + getId() + ", getFirstName()=" + getFirstName() + ", getLastName()="
-        + getLastName() + ", getDocumentType()=" + getDocumentType() + ", getDocumentNumber()="
-        + getDocumentNumber() + ", getBirthDate()=" + getBirthDate() + ", getClientId()=" + getClientId()
-        + ", toBuilder()=" + toBuilder() + ", getClass()=" + getClass() + ", hashCode()=" + hashCode()
-        + ", toString()=" + super.toString() + "]";
+        + clientId + "]";
   }
 
-  public static final class Builder {
-    private UUID id;
-    private String firstName;
-    private String lastName;
-    private String documentType;
-    private String documentNumber;
-    private LocalDate birthDate;
-    private UUID clientId;
-
-    private Builder() {
+  private static String validateNonBlank(String value, String fieldName) {
+    if (value == null || value.isBlank()) {
+      throw new IllegalArgumentException(fieldName + " must not be null or blank");
     }
+    return value;
+  }
 
-    public Builder withId(UUID id) {
-      this.id = id;
-      return this;
+  private static LocalDate validateBirthDate(LocalDate birthDate) {
+    if (birthDate == null) {
+      throw new IllegalArgumentException("birthDate must not be null");
     }
-
-    public Builder withFirstName(String firstName) {
-      this.firstName = firstName;
-      return this;
+    if (birthDate.isAfter(LocalDate.now())) {
+      throw new IllegalArgumentException("birthDate must be in the past");
     }
-
-    public Builder withLastName(String lastName) {
-      this.lastName = lastName;
-      return this;
-    }
-
-    public Builder withDocumentType(String documentType) {
-      this.documentType = documentType;
-      return this;
-    }
-
-    public Builder withDocumentNumber(String documentNumber) {
-      this.documentNumber = documentNumber;
-      return this;
-    }
-
-    public Builder withBirthDate(LocalDate birthDate) {
-      this.birthDate = birthDate;
-      return this;
-    }
-
-    public Builder withClientId(UUID clientId) {
-      this.clientId = clientId;
-      return this;
-    }
-
-    public Employee build() {
-      UUID validatedId = Objects.requireNonNullElseGet(id, UUID::randomUUID);
-      String validatedFirstName = validateNonBlank(firstName, "firstName");
-      String validatedLastName = validateNonBlank(lastName, "lastName");
-      String validatedDocumentType = validateNonBlank(documentType, "documentType");
-      String validatedDocumentNumber = validateNonBlank(documentNumber, "documentNumber");
-      LocalDate validatedBirthDate = validateBirthDate(birthDate);
-      UUID validatedClientId = Objects.requireNonNull(clientId, "clientId must not be null");
-
-      this.id = validatedId;
-      this.firstName = validatedFirstName;
-      this.lastName = validatedLastName;
-      this.documentType = validatedDocumentType;
-      this.documentNumber = validatedDocumentNumber;
-      this.birthDate = validatedBirthDate;
-      this.clientId = validatedClientId;
-
-      return new Employee(this);
-    }
-
-    private static String validateNonBlank(String value, String fieldName) {
-      if (value == null || value.isBlank()) {
-        throw new IllegalArgumentException(fieldName + " must not be null or blank");
-      }
-      return value;
-    }
-
-    private static LocalDate validateBirthDate(LocalDate birthDate) {
-      if (birthDate == null) {
-        throw new IllegalArgumentException("birthDate must not be null");
-      }
-      if (birthDate.isAfter(LocalDate.now())) {
-        throw new IllegalArgumentException("birthDate must be in the past");
-      }
-      return birthDate;
-    }
+    return birthDate;
   }
 }
