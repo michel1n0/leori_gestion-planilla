@@ -1,7 +1,9 @@
 package tech.leori.gestionplanilla.client.application.ports.in;
 
+import java.util.UUID;
+
 import tech.leori.gestionplanilla.client.application.ports.in.commands.CreateClientCommand;
 
 public interface CreateClientUseCase {
-    Long handle(CreateClientCommand command);
+    UUID handle(CreateClientCommand command);
 }
