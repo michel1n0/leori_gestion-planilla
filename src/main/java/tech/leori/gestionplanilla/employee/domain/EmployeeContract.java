@@ -46,18 +46,8 @@ public final class EmployeeContract {
     return contractType;
   }
 
-  public static Builder builder() {
+  static Builder builder() {
     return new Builder();
-  }
-
-  public Builder toBuilder() {
-    return new Builder()
-        .withContractId(this.contractId)
-        .withEmployeeId(this.employeeId)
-        .withStartDate(this.startDate)
-        .withEndDate(this.endDate)
-        .withSalary(this.salary)
-        .withContractType(this.contractType);
   }
 
   @Override
@@ -117,15 +107,17 @@ public final class EmployeeContract {
 
   @Override
   public String toString() {
-    return "EmployeeContract [contractId=" + contractId + ", employeeId=" + employeeId + ", startDate=" + startDate
-        + ", endDate=" + endDate + ", salary=" + salary + ", contractType=" + contractType + ", getContractId()="
-        + getContractId() + ", getEmployeeId()=" + getEmployeeId() + ", getStartDate()=" + getStartDate()
-        + ", getEndDate()=" + getEndDate() + ", getSalary()=" + getSalary() + ", getContractType()="
-        + getContractType() + ", toBuilder()=" + toBuilder() + ", getClass()=" + getClass() + ", hashCode()="
-        + hashCode() + ", toString()=" + super.toString() + "]";
+    return "EmployeeContract{"
+        + "contractId=" + contractId
+        + ", employeeId=" + employeeId
+        + ", startDate=" + startDate
+        + ", endDate=" + endDate
+        + ", salary=" + salary
+        + ", contractType='" + contractType + "'"
+        + '}';
   }
 
-  public static final class Builder {
+  static final class Builder {
     private UUID contractId;
     private UUID employeeId;
     private LocalDate startDate;
@@ -136,37 +128,37 @@ public final class EmployeeContract {
     private Builder() {
     }
 
-    public Builder withContractId(UUID contractId) {
+    Builder withContractId(UUID contractId) {
       this.contractId = contractId;
       return this;
     }
 
-    public Builder withEmployeeId(UUID employeeId) {
+    Builder withEmployeeId(UUID employeeId) {
       this.employeeId = employeeId;
       return this;
     }
 
-    public Builder withStartDate(LocalDate startDate) {
+    Builder withStartDate(LocalDate startDate) {
       this.startDate = startDate;
       return this;
     }
 
-    public Builder withEndDate(LocalDate endDate) {
+    Builder withEndDate(LocalDate endDate) {
       this.endDate = endDate;
       return this;
     }
 
-    public Builder withSalary(BigDecimal salary) {
+    Builder withSalary(BigDecimal salary) {
       this.salary = salary;
       return this;
     }
 
-    public Builder withContractType(String contractType) {
+    Builder withContractType(String contractType) {
       this.contractType = contractType;
       return this;
     }
 
-    public EmployeeContract build() {
+    EmployeeContract build() {
       UUID validatedContractId = Objects.requireNonNullElseGet(contractId, UUID::randomUUID);
       UUID validatedEmployeeId = Objects.requireNonNull(employeeId, "employeeId must not be null");
       LocalDate validatedStartDate = Objects.requireNonNull(startDate, "startDate must not be null");
