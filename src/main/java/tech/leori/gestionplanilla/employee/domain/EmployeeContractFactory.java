@@ -1,10 +1,8 @@
-package tech.leori.gestionplanilla.employee.domain.factory;
+package tech.leori.gestionplanilla.employee.domain;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-import tech.leori.gestionplanilla.employee.domain.Employee;
-import tech.leori.gestionplanilla.employee.domain.EmployeeContract;
 import tech.leori.gestionplanilla.employee.domain.exception.EmployeeDomainException;
 
 public final class EmployeeContractFactory {
