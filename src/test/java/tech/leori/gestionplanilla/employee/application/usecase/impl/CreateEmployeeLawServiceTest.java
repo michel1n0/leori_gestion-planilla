@@ -7,6 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ class CreateEmployeeLawServiceTest {
         .thenReturn(Optional.of(Mockito.mock(EmployeeContract.class)));
 
     CreateEmployeeLawCommand command =
-        new CreateEmployeeLawCommand(contractId, "RL", "  General Regime  ");
+        new CreateEmployeeLawCommand(contractId, "RL", "  General Regime  ", new BigDecimal("13.50"));
 
     service.create(command);
 
@@ -57,6 +58,10 @@ class CreateEmployeeLawServiceTest {
         "General Regime",
         savedLaw.getDescription(),
         "Law description should be trimmed by the factory");
+    assertEquals(
+        new BigDecimal("13.50"),
+        savedLaw.getContributionPercentage(),
+        "Law contribution should match the command value");
   }
 
   @Test
@@ -66,7 +71,7 @@ class CreateEmployeeLawServiceTest {
     when(employeeContractRepository.findById(contractId)).thenReturn(Optional.empty());
 
     CreateEmployeeLawCommand command =
-        new CreateEmployeeLawCommand(contractId, "RL", "General Regime");
+        new CreateEmployeeLawCommand(contractId, "RL", "General Regime", new BigDecimal("13.50"));
 
     assertThrows(EmployeeContractNotFoundException.class, () -> service.create(command));
 

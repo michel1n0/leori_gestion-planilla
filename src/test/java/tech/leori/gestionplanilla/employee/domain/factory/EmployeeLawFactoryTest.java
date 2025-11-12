@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.math.BigDecimal;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -18,11 +20,13 @@ class EmployeeLawFactoryTest {
   @Test
   @DisplayName("createLaw should return a trimmed EmployeeLaw when inputs are valid")
   void createLawWithValidInputs() {
-    EmployeeLaw employeeLaw = EmployeeLawFactory.createLaw("  ABC  ", "  General regime  ");
+    EmployeeLaw employeeLaw =
+        EmployeeLawFactory.createLaw("  ABC  ", "  General regime  ", new BigDecimal("9.75"));
 
     assertAll(
         () -> assertEquals("ABC", employeeLaw.getCode()),
-        () -> assertEquals("General regime", employeeLaw.getDescription()));
+        () -> assertEquals("General regime", employeeLaw.getDescription()),
+        () -> assertEquals(new BigDecimal("9.75"), employeeLaw.getContributionPercentage()));
   }
 
   @ParameterizedTest
@@ -32,7 +36,7 @@ class EmployeeLawFactoryTest {
   void createLawWithInvalidCodes(String code) {
     assertThrows(
         InvalidEmployeeLawException.class,
-        () -> EmployeeLawFactory.createLaw(code, "Description"));
+        () -> EmployeeLawFactory.createLaw(code, "Description", BigDecimal.ZERO));
   }
 
   @ParameterizedTest
@@ -42,6 +46,18 @@ class EmployeeLawFactoryTest {
   void createLawWithInvalidDescriptions(String description) {
     assertThrows(
         InvalidEmployeeLawException.class,
-        () -> EmployeeLawFactory.createLaw("ABC", description));
+        () -> EmployeeLawFactory.createLaw("ABC", description, BigDecimal.ZERO));
+  }
+
+  @ParameterizedTest
+  @NullSource
+  @ValueSource(strings = {"-0.01"})
+  @DisplayName("createLaw should throw when the contribution is null or negative")
+  void createLawWithInvalidContribution(String rawContribution) {
+    BigDecimal contribution = rawContribution == null ? null : new BigDecimal(rawContribution);
+
+    assertThrows(
+        InvalidEmployeeLawException.class,
+        () -> EmployeeLawFactory.createLaw("ABC", "Description", contribution));
   }
 }

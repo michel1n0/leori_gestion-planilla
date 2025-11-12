@@ -2,6 +2,8 @@ package tech.leori.gestionplanilla.employee.domain.factory;
 
 import java.util.regex.Pattern;
 
+import java.math.BigDecimal;
+
 import tech.leori.gestionplanilla.employee.domain.EmployeeLaw;
 import tech.leori.gestionplanilla.employee.domain.exception.InvalidEmployeeLawException;
 
@@ -12,11 +14,12 @@ public final class EmployeeLawFactory {
   private EmployeeLawFactory() {
   }
 
-  public static EmployeeLaw createLaw(String code, String description) {
+  public static EmployeeLaw createLaw(String code, String description, BigDecimal contribution) {
     String validatedCode = validateCode(code);
     String validatedDescription = validateDescription(description);
+    BigDecimal validatedContribution = validateContribution(contribution);
 
-    return new EmployeeLaw(validatedCode, validatedDescription);
+    return new EmployeeLaw(validatedCode, validatedDescription, validatedContribution);
   }
 
   private static String validateCode(String code) {
@@ -47,5 +50,17 @@ public final class EmployeeLawFactory {
     }
 
     return trimmedDescription;
+  }
+
+  private static BigDecimal validateContribution(BigDecimal contribution) {
+    if (contribution == null) {
+      throw new InvalidEmployeeLawException("Employee law contribution must not be null");
+    }
+
+    if (contribution.signum() < 0) {
+      throw new InvalidEmployeeLawException("Employee law contribution must not be negative");
+    }
+
+    return contribution;
   }
 }

@@ -34,7 +34,8 @@ public class CreateEmployeeLawService implements CreateEmployeeLawUseCase {
                     "Employee contract with id " + contractId + " was not found"));
 
     EmployeeLaw employeeLaw =
-        EmployeeLawFactory.createLaw(command.lawCode(), command.lawDescription());
+        EmployeeLawFactory.createLaw(
+            command.lawCode(), command.lawDescription(), command.lawContribution());
 
     employeeContractRepository.addLaw(contractId, employeeLaw);
   }
