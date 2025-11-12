@@ -9,12 +9,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import tech.leori.gestionplanilla.employee.domain.EmployeeArea;
 import tech.leori.gestionplanilla.employee.domain.EmployeeContract;
 import tech.leori.gestionplanilla.employee.domain.EmployeeContractRepository;
+import tech.leori.gestionplanilla.employee.domain.EmployeeLaw;
 import tech.leori.gestionplanilla.employee.domain.exception.EmployeeContractNotFoundException;
 
 public class InMemoryEmployeeContractRepository implements EmployeeContractRepository {
 
   private final Map<UUID, EmployeeContract> storage = new ConcurrentHashMap<>();
   private final Map<UUID, EmployeeArea> contractAreas = new ConcurrentHashMap<>();
+  private final Map<UUID, EmployeeLaw> contractLaws = new ConcurrentHashMap<>();
 
   @Override
   public EmployeeContract save(EmployeeContract employeeContract) {
@@ -40,5 +42,18 @@ public class InMemoryEmployeeContractRepository implements EmployeeContractRepos
     }
 
     contractAreas.put(contractId, employeeArea);
+  }
+
+  @Override
+  public void addLaw(UUID contractId, EmployeeLaw employeeLaw) {
+    Objects.requireNonNull(contractId, "contractId must not be null");
+    Objects.requireNonNull(employeeLaw, "employeeLaw must not be null");
+
+    if (!storage.containsKey(contractId)) {
+      throw new EmployeeContractNotFoundException(
+          "Employee contract with id " + contractId + " was not found");
+    }
+
+    contractLaws.put(contractId, employeeLaw);
   }
 }
