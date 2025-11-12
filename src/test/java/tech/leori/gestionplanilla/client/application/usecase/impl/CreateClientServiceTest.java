@@ -1,4 +1,4 @@
-package tech.leori.consulting.java.arq.clean.gestion.planillas.client.application.usecase.impl;
+package tech.leori.gestionplanilla.client.application.usecase.impl;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import tech.leori.consulting.java.arq.clean.gestion.planillas.client.application.command.CreateClientCommand;
+import tech.leori.gestionplanilla.client.application.command.CreateClientCommand;
 import tech.leori.gestionplanilla.client.application.ports.out.ClientRepository;
 import tech.leori.gestionplanilla.client.domain.Client;
 import tech.leori.gestionplanilla.client.domain.factory.ClientFactory;

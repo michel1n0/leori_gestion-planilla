@@ -1,9 +1,9 @@
-package tech.leori.consulting.java.arq.clean.gestion.planillas.client.application.usecase.impl;
+package tech.leori.gestionplanilla.client.application.usecase.impl;
 
 import java.util.Objects;
 
-import tech.leori.consulting.java.arq.clean.gestion.planillas.client.application.command.CreateClientCommand;
-import tech.leori.consulting.java.arq.clean.gestion.planillas.client.application.usecase.CreateClientUseCase;
+import tech.leori.gestionplanilla.client.application.command.CreateClientCommand;
+import tech.leori.gestionplanilla.client.application.usecase.CreateClientUseCase;
 import tech.leori.gestionplanilla.client.application.ports.out.ClientRepository;
 import tech.leori.gestionplanilla.client.domain.Client;
 import tech.leori.gestionplanilla.client.domain.factory.ClientFactory;
